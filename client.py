@@ -7,6 +7,7 @@ from workers.data_reader_worker import DataReader
 
 def main():
     c = None
+    WORKERS_NUM = 3
     input_queue = Queue()
     try:
         c = ModbusClient(host='server',
@@ -25,8 +26,10 @@ def main():
     except ValueError:
         print("Error with host or port params")
     data_worker_threads: List[DataReader] = []
-    data_worker = DataReader(input_queue=input_queue)
-    data_worker_threads.append(data_worker)
+    
+    for _ in range(WORKERS_NUM):
+        data_worker = DataReader(input_queue=input_queue)
+        data_worker_threads.append(data_worker)
 
     while True:
         if c is None:
