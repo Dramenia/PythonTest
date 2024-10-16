@@ -4,7 +4,6 @@ REPO_URL="https://github.com/Dramenia/PythonTest"
 
 DEST_FOLDER="hyet"
 
-# Clone the repository
 git clone "$REPO_URL" "$DEST_FOLDER"
 
 if [ $? -eq 0 ]; then

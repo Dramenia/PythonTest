@@ -4,13 +4,11 @@ REPO_URL="https://github.com/Dramenia/PythonTest"
 
 DEST_FOLDER="hyet"
 
-# Clone the repository
 git clone "$REPO_URL" "$DEST_FOLDER"
 
 if [ $? -eq 0 ]; then
     echo "Repository cloned successfully into '$DEST_FOLDER'."
 
-    # Create .env file with PostgreSQL configuration
     echo "DEBUG=False
 SECRET_KEY=django-insecure-p_)32csof!z47by56#h@9lznxt7yu4&o+ah%to9lus2+14m@e2
 DATABASE_NAME=hyet
