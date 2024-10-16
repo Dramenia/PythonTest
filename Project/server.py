@@ -13,6 +13,7 @@ class LocalDataBank(DataBank):
         v_regs_d = list()
         v_regs_d.append(random.randrange(start=10, stop=200))
         try:
+            print(f"sending value: {v_regs_d}")
             return v_regs_d
         except KeyError:
             return
@@ -20,5 +21,6 @@ class LocalDataBank(DataBank):
 
 if __name__ == '__main__':
     # init modbus server and start it
-    server = ModbusServer(host='localhost', port=502, data_bank=LocalDataBank())
+    server = ModbusServer(host='0.0.0.0', port=502, data_bank=LocalDataBank())
+    print("starting server")
     server.start()

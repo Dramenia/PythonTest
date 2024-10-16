@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "${DATABASE_PORT}:5432"
+    env_file:
+      - .env
+
+  django:
+    build:
+      context: .
+      dockerfile: ./api_connector/Dockerfile
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./api_connector:/app
+    ports:
+      - 8000:8000
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: 5432
+    depends_on:
+      - postgres
+
+  server:
+    build:
+      context: .
+      dockerfile: ./Project/Dockerfile
+    volumes:
+      - ./Project:/app
+    command: "python server.py"
+    ports:
+      - "502:502"
+    depends_on:
+      - postgres
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_HOST: ${DATABASE_HOST}
+      POSTGRES_PORT: 5432
+    volumes:
+      - .:/app
+    command: "python client.py"
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:
